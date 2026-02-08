@@ -1,24 +1,24 @@
 # TODO — Implementation Plan
 
 ## Phase 0: Project Setup
-- [ ] Initialize Vite + React + TypeScript project
-- [ ] Configure Tailwind CSS
-- [ ] Configure Vitest + React Testing Library
-- [ ] Set up ESLint with TypeScript rules
-- [ ] Configure `tsconfig.json` with strict mode
-- [ ] Create `src/types/index.ts` with shared type definitions
+- [x] Initialize Vite + React + TypeScript project
+- [x] Configure Tailwind CSS
+- [x] Configure Vitest + React Testing Library
+- [x] Set up ESLint with TypeScript rules
+- [x] Configure `tsconfig.json` with strict mode
+- [x] Create `src/types/index.ts` with shared type definitions
 - [x] Source and validate `pin-frequency.csv`, place in `public/data/`
 
 ## Phase 1: Data Layer
-- [ ] Implement `src/data/pin-frequency.ts` (CSV loader with validation + caching)
-- [ ] Implement `src/lib/frequency.ts` (lookup, normalization, ranking functions)
-- [ ] Write tests: `tests/lib/frequency.test.ts`
-  - [ ] Test: loads all 10,000 PINs
-  - [ ] Test: no duplicate PINs
-  - [ ] Test: all counts are positive integers
-  - [ ] Test: `getFrequency` returns correct count for known PINs
-  - [ ] Test: `normalizeFrequency` preserves proportional relationships
-  - [ ] Test: `rankByFrequency` returns descending order
+- [x] Implement `src/data/pin-frequency.ts` (CSV loader with validation + caching)
+- [x] Implement `src/lib/frequency.ts` (lookup, normalization, ranking functions)
+- [x] Write tests: `tests/lib/frequency.test.ts`
+  - [x] Test: loads all 10,000 PINs
+  - [x] Test: no duplicate PINs
+  - [x] Test: all counts are positive integers
+  - [x] Test: `getFrequency` returns correct count for known PINs
+  - [x] Test: `normalizeFrequency` preserves proportional relationships
+  - [x] Test: `rankByFrequency` returns descending order
 
 ## Phase 2: Core Algorithm
 - [ ] Implement `src/lib/keypad.ts` (key center coordinates)
