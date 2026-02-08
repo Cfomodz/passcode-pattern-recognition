@@ -5,7 +5,7 @@ A mobile-first web application for penetration testers to assess PIN entry secur
 ## Purpose
 
 During physical security assessments, a tester observes a subject entering a PIN on a keypad. The tester does **not** see the keypad — they only see the **hand/finger motion**. This app lets them replay that motion on a blank screen and generates ranked PIN guesses using two independent signals:
-
+ 
 1. **Spatial heatmap analysis** — where each tap lands relative to a standard keypad layout
 2. **PIN frequency statistics** — how commonly each 4-digit PIN is used in the real world
 
