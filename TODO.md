@@ -7,7 +7,7 @@
 - [ ] Set up ESLint with TypeScript rules
 - [ ] Configure `tsconfig.json` with strict mode
 - [ ] Create `src/types/index.ts` with shared type definitions
-- [ ] Source and validate `pin-frequency.csv`, place in `public/data/`
+- [x] Source and validate `pin-frequency.csv`, place in `public/data/`
 
 ## Phase 1: Data Layer
 - [ ] Implement `src/data/pin-frequency.ts` (CSV loader with validation + caching)
