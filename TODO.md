@@ -21,23 +21,23 @@
   - [x] Test: `rankByFrequency` returns descending order
 
 ## Phase 2: Core Algorithm
-- [ ] Implement `src/lib/keypad.ts` (key center coordinates)
-- [ ] Implement `src/lib/normalize.ts` (center + scale tap coordinates)
-- [ ] Write tests: `tests/lib/normalize.test.ts`
-  - [ ] Test: taps spanning full screen normalize to full [0,1] range
-  - [ ] Test: taps in small area expand to fill keypad space
-  - [ ] Test: single-point degenerate case → all map to center
-  - [ ] Test: horizontal line degenerate case → vertical padding applied
-  - [ ] Test: vertical line degenerate case → horizontal padding applied
-  - [ ] Test: aspect ratio correction preserves keypad proportions
-- [ ] Implement `src/lib/heatmap.ts` (Gaussian digit probabilities)
-- [ ] Write tests: `tests/lib/heatmap.test.ts`
-  - [ ] Test: probabilities sum to 1.0 for any tap position
-  - [ ] Test: upper-left tap → digit 1 has highest probability
-  - [ ] Test: center tap → digit 5 has highest probability
-  - [ ] Test: bottom-center tap → digit 0 has highest probability
-  - [ ] Test: sigma parameter affects distribution spread
-  - [ ] Test: symmetry — mirrored positions produce mirrored probabilities
+- [x] Implement `src/lib/keypad.ts` (key center coordinates)
+- [x] Implement `src/lib/normalize.ts` (center + scale tap coordinates)
+- [x] Write tests: `tests/lib/normalize.test.ts`
+  - [x] Test: taps spanning full screen normalize to full [0,1] range
+  - [x] Test: taps in small area expand to fill keypad space
+  - [x] Test: single-point degenerate case → all map to center
+  - [x] Test: horizontal line degenerate case → vertical padding applied
+  - [x] Test: vertical line degenerate case → horizontal padding applied
+  - [x] Test: aspect ratio correction preserves keypad proportions
+- [x] Implement `src/lib/heatmap.ts` (Gaussian digit probabilities)
+- [x] Write tests: `tests/lib/heatmap.test.ts`
+  - [x] Test: probabilities sum to 1.0 for any tap position
+  - [x] Test: upper-left tap → digit 1 has highest probability
+  - [x] Test: center tap → digit 5 has highest probability
+  - [x] Test: bottom-center tap → digit 0 has highest probability
+  - [x] Test: sigma parameter affects distribution spread
+  - [x] Test: symmetry — mirrored positions produce mirrored probabilities
 - [ ] Implement `src/lib/candidates.ts` (candidate generation + heatmap ranking)
 - [ ] Write tests: `tests/lib/candidates.test.ts`
   - [ ] Test: generates expected number of candidates (topK^4)
