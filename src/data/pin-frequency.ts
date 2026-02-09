@@ -3,7 +3,7 @@ let cached: Map<string, number> | null = null;
 export async function loadFrequencyData(): Promise<Map<string, number>> {
   if (cached) return cached;
 
-  const response = await fetch('/data/pin-frequency.csv');
+  const response = await fetch(`${import.meta.env.BASE_URL}data/pin-frequency.csv`);
   if (!response.ok) {
     throw new Error(`Failed to load frequency data: ${response.statusText}`);
   }
