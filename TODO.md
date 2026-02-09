@@ -38,20 +38,20 @@
   - [x] Test: bottom-center tap → digit 0 has highest probability
   - [x] Test: sigma parameter affects distribution spread
   - [x] Test: symmetry — mirrored positions produce mirrored probabilities
-- [ ] Implement `src/lib/candidates.ts` (candidate generation + heatmap ranking)
-- [ ] Write tests: `tests/lib/candidates.test.ts`
-  - [ ] Test: generates expected number of candidates (topK^4)
-  - [ ] Test: all candidates are valid 4-digit PINs
-  - [ ] Test: scores are products of per-position probabilities
-  - [ ] Test: results are sorted descending by score
-  - [ ] Test: top candidate matches the most likely digit per position
-- [ ] Implement `src/lib/composite.ts` (weighted composite scoring)
-- [ ] Write tests: `tests/lib/composite.test.ts`
-  - [ ] Test: weights (1.0, 0.0) produces same ranking as heatmap only
-  - [ ] Test: weights (0.0, 1.0) produces frequency-only ranking
-  - [ ] Test: high-frequency PIN overtakes low-frequency PIN when frequency weight is high
-  - [ ] Test: proportional frequency (9x count → 9x frequency weight)
-  - [ ] Test: frequency-filtered list uses top 25% of heatmap candidates
+- [x] Implement `src/lib/candidates.ts` (candidate generation + heatmap ranking)
+- [x] Write tests: `tests/lib/candidates.test.ts`
+  - [x] Test: generates expected number of candidates (topK^4)
+  - [x] Test: all candidates are valid 4-digit PINs
+  - [x] Test: scores are products of per-position probabilities
+  - [x] Test: results are sorted descending by score
+  - [x] Test: top candidate matches the most likely digit per position
+- [x] Implement `src/lib/composite.ts` (weighted composite scoring)
+- [x] Write tests: `tests/lib/composite.test.ts`
+  - [x] Test: weights (1.0, 0.0) produces same ranking as heatmap only
+  - [x] Test: weights (0.0, 1.0) produces frequency-only ranking
+  - [x] Test: high-frequency PIN overtakes low-frequency PIN when frequency weight is high
+  - [x] Test: proportional frequency (9x count → 9x frequency weight)
+  - [x] Test: frequency-filtered list uses top 25% of heatmap candidates
 
 ## Phase 3: UI Components
 - [ ] Implement `src/components/TapGrid.tsx` (blank grid capture surface)
