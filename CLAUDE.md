@@ -14,7 +14,7 @@ Passcode Pattern Recognition — a mobile-first React/TypeScript web app for pen
 - **Styling**: Tailwind CSS (mobile-first)
 - **Testing**: Vitest + React Testing Library
 - **Package manager**: npm
-- **Node**: 18+
+- **Node**: 22+
 
 ## Commands
 
