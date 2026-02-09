@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateCandidates, rankByHeatmap } from '../../src/lib/candidates';
-import { TapAnalysis } from '../../src/types';
+import type { TapAnalysis } from '../../src/types';
 
 describe('Candidate Generation', () => {
   // Helper to create mock analysis

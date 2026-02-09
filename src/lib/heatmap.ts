@@ -1,4 +1,4 @@
-import { NormalizedTap, DigitProbability } from '../types';
+import type { NormalizedTap, DigitProbability } from '../types';
 import { KEY_CENTERS } from './keypad';
 
 export const DEFAULT_SIGMA = 0.35;

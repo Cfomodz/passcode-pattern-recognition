@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { TapPoint } from '../types';
+import type { TapPoint } from '../types';
 
 interface TapGridProps {
   onTap: (point: TapPoint) => void;

@@ -1,4 +1,4 @@
-import { PinCandidate } from '../types';
+import type { PinCandidate } from '../types';
 import { getFrequency, normalizeFrequency } from './frequency';
 
 export const DEFAULT_WEIGHT_HEATMAP = 0.5;

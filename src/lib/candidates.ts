@@ -1,4 +1,4 @@
-import { DigitProbability, PinCandidate, TapAnalysis } from '../types';
+import type { PinCandidate, TapAnalysis } from '../types';
 
 export const DEFAULT_TOP_K = 4;
 

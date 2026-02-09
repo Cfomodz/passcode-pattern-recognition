@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TapPoint } from '../types';
+import type { TapPoint } from '../types';
 
 interface TapIndicatorProps {
   point: TapPoint;

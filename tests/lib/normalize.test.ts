@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { normalizeTaps } from '../../src/lib/normalize';
-import { TapPoint } from '../../src/types';
+import type { TapPoint } from '../../src/types';
 
 describe('Normalization Logic', () => {
   it('normalizes taps spanning full screen to [0,1]', () => {

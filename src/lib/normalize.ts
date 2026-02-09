@@ -1,4 +1,4 @@
-import { TapPoint, NormalizedTap } from '../types';
+import type { TapPoint, NormalizedTap } from '../types';
 import { KEYPAD_ASPECT_RATIO } from './keypad';
 
 /**

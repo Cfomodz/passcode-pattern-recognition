@@ -1,5 +1,5 @@
 import React from 'react';
-import { PinCandidate } from '../types';
+import type { PinCandidate } from '../types';
 
 interface SessionEntry {
   id: number;

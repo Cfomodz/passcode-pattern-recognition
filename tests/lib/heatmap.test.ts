@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getDigitProbabilities, DEFAULT_SIGMA } from '../../src/lib/heatmap';
-import { KEY_CENTERS } from '../../src/lib/keypad';
+import { getDigitProbabilities } from '../../src/lib/heatmap';
 
 describe('Heatmap Logic', () => {
   it('probabilities sum to 1.0', () => {

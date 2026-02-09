@@ -1,5 +1,5 @@
 import React from 'react';
-import { PinCandidate, AnalysisResult } from '../types';
+import type { PinCandidate, AnalysisResult } from '../types';
 
 interface ResultsPanelProps {
   results: AnalysisResult;
@@ -62,14 +62,14 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({ results, heatmapWeig
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex space-x-1 bg-slate-800 p-1 rounded-lg">
-        {[
-          { id: 'composite', label: 'Composite' },
-          { id: 'spatial', label: 'Spatial' },
-          { id: 'frequency', label: 'Frequency' }
-        ].map(tab => (
+        {([
+          { id: 'composite' as const, label: 'Composite' },
+          { id: 'spatial' as const, label: 'Spatial' },
+          { id: 'frequency' as const, label: 'Frequency' }
+        ]).map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id)}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
               activeTab === tab.id 
                 ? 'bg-cyan-600 text-white shadow-lg' 

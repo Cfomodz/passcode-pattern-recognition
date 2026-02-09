@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { rankByFilteredFrequency, rankByComposite } from '../../src/lib/composite';
-import { PinCandidate } from '../../src/types';
+import type { PinCandidate } from '../../src/types';
 
 describe('Composite Scoring', () => {
   // Mock data

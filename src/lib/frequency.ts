@@ -1,4 +1,4 @@
-import { PinCandidate } from '../types';
+import type { PinCandidate } from '../types';
 
 /**
  * Look up the raw frequency count for a given PIN.

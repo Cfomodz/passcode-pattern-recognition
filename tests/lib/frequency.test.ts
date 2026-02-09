@@ -16,10 +16,10 @@ describe('Data Layer', () => {
         return `${pin},${10000 - i}`;
       }).join('\n');
 
-      global.fetch = vi.fn().mockResolvedValue({
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
         ok: true,
         text: () => Promise.resolve(mockCsv),
-      } as Response);
+      } as Response));
 
       const map = await loadFrequencyData();
       expect(map.size).toBe(10000);
@@ -29,42 +29,33 @@ describe('Data Layer', () => {
 
     it('throws error if data is incomplete (< 10000 rows)', async () => {
       const mockCsv = '1234,100\n0000,50'; // Only 2 entries
-      global.fetch = vi.fn().mockResolvedValue({
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
         ok: true,
         text: () => Promise.resolve(mockCsv),
-      } as Response);
+      } as Response));
 
       await expect(loadFrequencyData()).rejects.toThrow('Expected 10000 PINs');
     });
 
     it('throws error on duplicate PINs', async () => {
-        // Create 9999 unique + 1 duplicate to make 10000 lines, but only 9999 unique keys
-        // Actually my code throws on duplicate detection immediately
-        const mockCsv = '1234,100\n1234,50\n' + Array.from({ length: 9998 }, (_, i) => {
-             // start from 0000, skip 1234 if it appears? 
-             // simpler: just 2 lines that are duplicates
-             return '0000,1'; 
-        }).join('\n'); // This is messy to construct to hit exactly 10000 check if we didn't throw early.
-        
-        // My implementation throws early on duplicates.
-        const shortCsv = '1234,100\n1234,50';
-        global.fetch = vi.fn().mockResolvedValue({
-            ok: true,
-            text: () => Promise.resolve(shortCsv),
-        } as Response);
+      const shortCsv = '1234,100\n1234,50';
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(shortCsv),
+      } as Response));
 
-        await expect(loadFrequencyData()).rejects.toThrow('Duplicate PIN found: 1234');
+      await expect(loadFrequencyData()).rejects.toThrow('Duplicate PIN found: 1234');
     });
 
     it('skips invalid PIN formats but fails completeness check', async () => {
-        const mockCsv = '123,100\nABCD,50'; 
-        global.fetch = vi.fn().mockResolvedValue({
-            ok: true,
-            text: () => Promise.resolve(mockCsv),
-        } as Response);
+      const mockCsv = '123,100\nABCD,50';
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(mockCsv),
+      } as Response));
 
-        // It should skip these lines, resulting in empty map, then throw completeness error
-        await expect(loadFrequencyData()).rejects.toThrow('Expected 10000 PINs');
+      // It should skip these lines, resulting in empty map, then throw completeness error
+      await expect(loadFrequencyData()).rejects.toThrow('Expected 10000 PINs');
     });
   });
 
@@ -98,7 +89,7 @@ describe('Data Layer', () => {
     it('rankByFrequency returns descending order', () => {
       const pins = ['0000', '1234', '1111', '9999'];
       const ranked = rankByFrequency(pins, mockMap);
-      
+
       expect(ranked).toHaveLength(4);
       expect(ranked[0]).toEqual({ pin: '1234', score: 100 });
       expect(ranked[1]).toEqual({ pin: '1111', score: 50 });

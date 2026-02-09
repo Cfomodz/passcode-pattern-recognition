@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { TapPoint, AnalysisResult } from '../types';
+import type { TapPoint, AnalysisResult } from '../types';
 import { normalizeTaps } from '../lib/normalize';
 import { getDigitProbabilities } from '../lib/heatmap';
 import { generateCandidates } from '../lib/candidates';
@@ -20,7 +20,6 @@ export function useAnalysis() {
     try {
       // 1. Load Data
       const freqMap = await loadFrequencyData();
-      const frequencyWeight = 1 - heatmapWeight;
 
       // 2. Normalize
       const normalized = normalizeTaps(taps);
@@ -36,10 +35,9 @@ export function useAnalysis() {
 
       // 5. Composite Rankings
       const compositeRanking = rankByComposite(
-        heatmapCandidates, 
-        freqMap, 
-        heatmapWeight, 
-        frequencyWeight
+        heatmapCandidates,
+        freqMap,
+        heatmapWeight
       );
 
       const frequencyRanking = rankByFilteredFrequency(

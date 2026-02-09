@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { TapPoint } from '../types';
+import type { TapPoint } from '../types';
 
 interface UseTapCaptureResult {
   taps: TapPoint[];
