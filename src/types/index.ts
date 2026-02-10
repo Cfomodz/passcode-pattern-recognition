@@ -3,6 +3,11 @@ export interface TapPoint {
   y: number;
 }
 
+export interface GridBounds {
+  readonly width: number;
+  readonly height: number;
+}
+
 export interface NormalizedTap {
   x: number;
   y: number;

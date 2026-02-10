@@ -9,7 +9,7 @@ import { useAnalysis } from './hooks/useAnalysis';
 import type { AnalysisResult, PinCandidate } from './types';
 
 function App() {
-  const { taps, addTap, reset: resetTaps, isComplete } = useTapCapture();
+  const { taps, gridBounds, addTap, reset: resetTaps, isComplete } = useTapCapture();
   const { analyze, isAnalyzing, error } = useAnalysis();
 
   const [results, setResults] = useState<AnalysisResult | null>(null);
@@ -17,11 +17,11 @@ function App() {
   const [history, setHistory] = useState<Array<{ id: number; timestamp: Date; topCandidate: PinCandidate }>>([]);
 
   const runAnalysis = useCallback(async (weight: number) => {
-    const res = await analyze(taps, weight);
+    const res = await analyze(taps, weight, gridBounds);
     if (res) {
       setResults(res);
     }
-  }, [analyze, taps]);
+  }, [analyze, taps, gridBounds]);
 
   // Auto-analyze when taps complete
   useEffect(() => {

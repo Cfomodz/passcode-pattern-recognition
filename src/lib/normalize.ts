@@ -1,13 +1,38 @@
-import type { TapPoint, NormalizedTap } from '../types';
+import type { TapPoint, NormalizedTap, GridBounds } from '../types';
 import { KEYPAD_ASPECT_RATIO } from './keypad';
 
 /**
- * Normalizes a sequence of tap points to the [0, 1] coordinate space,
- * preserving the aspect ratio of the standard keypad (0.75).
+ * Normalizes a sequence of tap points to the [0, 1] coordinate space.
+ *
+ * When gridBounds is provided, normalizes relative to the grid dimensions,
+ * preserving absolute tap position within the grid. This is the primary mode
+ * used by the UI.
+ *
+ * When gridBounds is omitted, falls back to bounding-box normalization
+ * (legacy behavior), which only preserves relative tap positions.
  */
-export function normalizeTaps(taps: TapPoint[]): NormalizedTap[] {
+export function normalizeTaps(taps: TapPoint[], gridBounds?: GridBounds): NormalizedTap[] {
   if (taps.length === 0) return [];
 
+  // Grid-relative normalization: preserves absolute position
+  if (gridBounds && gridBounds.width > 0 && gridBounds.height > 0) {
+    return taps.map(tap => ({
+      x: tap.x / gridBounds.width,
+      y: tap.y / gridBounds.height
+    }));
+  }
+
+  // Fallback: bounding-box normalization (legacy)
+  return normalizeTapsByBoundingBox(taps);
+}
+
+/**
+ * Legacy bounding-box normalization. Normalizes taps relative to their own
+ * bounding box with aspect ratio correction. This loses absolute position
+ * information — patterns with the same shape but different positions
+ * (e.g., 1235 vs 4568) produce identical results.
+ */
+function normalizeTapsByBoundingBox(taps: TapPoint[]): NormalizedTap[] {
   // 1. Compute bounding box
   let minX = Infinity, maxX = -Infinity;
   let minY = Infinity, maxY = -Infinity;
@@ -23,7 +48,7 @@ export function normalizeTaps(taps: TapPoint[]): NormalizedTap[] {
   let height = maxY - minY;
 
   // 2. Handle degenerate cases
-  
+
   // All taps in same spot
   if (width === 0 && height === 0) {
     return taps.map(() => ({ x: 0.5, y: 0.5 }));
@@ -32,7 +57,7 @@ export function normalizeTaps(taps: TapPoint[]): NormalizedTap[] {
   // Vertical line (width 0) or Horizontal line (height 0)
   // or very small dimensions relative to the other
   // "Apply a minimum dimension threshold: if either dimension < 10% of the other, clamp to 10%"
-  
+
   // First handle absolute zeros to avoid division by zero or weird logic
   // If width is 0, the points are all on a vertical line at minX.
   // We want to expand the box to be centered on minX.
@@ -41,7 +66,7 @@ export function normalizeTaps(taps: TapPoint[]): NormalizedTap[] {
       minX = minX - targetWidth / 2;
       width = targetWidth;
   }
-  
+
   if (height === 0) {
       const targetHeight = width * 0.1;
       minY = minY - targetHeight / 2;
@@ -55,7 +80,7 @@ export function normalizeTaps(taps: TapPoint[]): NormalizedTap[] {
     minX = center - targetWidth / 2;
     width = targetWidth;
   }
-  
+
   if (height < width * 0.1) {
     const targetHeight = width * 0.1;
     const center = minY + height / 2;
@@ -66,9 +91,9 @@ export function normalizeTaps(taps: TapPoint[]): NormalizedTap[] {
   // 3. Compute aspect ratio correction
   // Keypad aspect ratio = 0.75 (width / height)
   // We want the bounding box of the taps to map to a region with this aspect ratio
-  
+
   const currentAspectRatio = width / height;
-  
+
   let adjustedWidth = width;
   let adjustedHeight = height;
   let adjustedMinX = minX;
