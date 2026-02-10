@@ -37,7 +37,10 @@ describe('TapGrid', () => {
     });
 
     expect(handleTap).toHaveBeenCalledTimes(1);
-    expect(handleTap).toHaveBeenCalledWith({ x: 50, y: 50 }); // 150 - 100
+    expect(handleTap).toHaveBeenCalledWith(
+      { x: 50, y: 50 }, // 150 - 100
+      { width: 300, height: 400 } // grid bounds from getBoundingClientRect
+    );
   });
 
   it('ignores taps when not active', () => {

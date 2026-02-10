@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { normalizeTaps } from '../../src/lib/normalize';
-import type { TapPoint } from '../../src/types';
+import type { TapPoint, GridBounds } from '../../src/types';
 
 describe('Normalization Logic', () => {
   it('normalizes taps spanning full screen to [0,1]', () => {
@@ -139,5 +139,97 @@ describe('Normalization Logic', () => {
       // N4: (300-80)/220 = 1.0
       expect(normalized[3].x).toBeCloseTo(1.0, 3);
       expect(normalized[3].y).toBeCloseTo(0.926, 3);
+  });
+});
+
+describe('Grid-relative Normalization', () => {
+  const grid: GridBounds = { width: 375, height: 500 };
+
+  it('normalizes taps relative to grid dimensions', () => {
+    const taps: TapPoint[] = [
+      { x: 0, y: 0 },
+      { x: 375, y: 500 }
+    ];
+    const normalized = normalizeTaps(taps, grid);
+
+    expect(normalized[0].x).toBeCloseTo(0);
+    expect(normalized[0].y).toBeCloseTo(0);
+    expect(normalized[1].x).toBeCloseTo(1);
+    expect(normalized[1].y).toBeCloseTo(1);
+  });
+
+  it('preserves absolute position within the grid', () => {
+    // Tap at the center of the grid
+    const taps: TapPoint[] = [
+      { x: 187.5, y: 250 }
+    ];
+    const normalized = normalizeTaps(taps, grid);
+
+    expect(normalized[0].x).toBeCloseTo(0.5);
+    expect(normalized[0].y).toBeCloseTo(0.5);
+  });
+
+  it('should produce different results for 1235 vs 4568 patterns (issue #12)', () => {
+    // KEY_CENTERS: 1=(1/6, 1/8), 2=(3/6, 1/8), 3=(5/6, 1/8), 5=(3/6, 3/8)
+    //              4=(1/6, 3/8), 5=(3/6, 3/8), 6=(5/6, 3/8), 8=(3/6, 5/8)
+    //
+    // Simulate user tapping at proportional positions for each PIN
+
+    // 1235: taps in upper region of grid
+    const taps1235: TapPoint[] = [
+      { x: grid.width * (1/6), y: grid.height * (1/8) },  // key 1
+      { x: grid.width * (3/6), y: grid.height * (1/8) },  // key 2
+      { x: grid.width * (5/6), y: grid.height * (1/8) },  // key 3
+      { x: grid.width * (3/6), y: grid.height * (3/8) },  // key 5
+    ];
+
+    // 4568: taps in middle region of grid
+    const taps4568: TapPoint[] = [
+      { x: grid.width * (1/6), y: grid.height * (3/8) },  // key 4
+      { x: grid.width * (3/6), y: grid.height * (3/8) },  // key 5
+      { x: grid.width * (5/6), y: grid.height * (3/8) },  // key 6
+      { x: grid.width * (3/6), y: grid.height * (5/8) },  // key 8
+    ];
+
+    const norm1235 = normalizeTaps(taps1235, grid);
+    const norm4568 = normalizeTaps(taps4568, grid);
+
+    // Y coordinates should be different: 1235 is in the upper region, 4568 in the middle
+    // First tap Y: 1/8 = 0.125 for 1235, 3/8 = 0.375 for 4568
+    expect(norm1235[0].y).toBeCloseTo(1/8);
+    expect(norm4568[0].y).toBeCloseTo(3/8);
+    expect(norm1235[0].y).not.toBeCloseTo(norm4568[0].y);
+
+    // Last tap Y: 3/8 = 0.375 for 1235, 5/8 = 0.625 for 4568
+    expect(norm1235[3].y).toBeCloseTo(3/8);
+    expect(norm4568[3].y).toBeCloseTo(5/8);
+    expect(norm1235[3].y).not.toBeCloseTo(norm4568[3].y);
+  });
+
+  it('falls back to bounding-box normalization when gridBounds is omitted', () => {
+    const taps: TapPoint[] = [
+      { x: 0, y: 0 },
+      { x: 300, y: 400 }
+    ];
+    // Without gridBounds, should use legacy bounding-box behavior
+    const normalized = normalizeTaps(taps);
+    expect(normalized[0].x).toBeCloseTo(0);
+    expect(normalized[0].y).toBeCloseTo(0);
+    expect(normalized[1].x).toBeCloseTo(1);
+    expect(normalized[1].y).toBeCloseTo(1);
+  });
+
+  it('falls back to bounding-box normalization when gridBounds has zero dimensions', () => {
+    const taps: TapPoint[] = [
+      { x: 0, y: 0 },
+      { x: 300, y: 400 }
+    ];
+    const zeroBounds: GridBounds = { width: 0, height: 0 };
+    const normalized = normalizeTaps(taps, zeroBounds);
+    // Should use legacy bounding-box behavior
+    expect(normalized[0].x).toBeCloseTo(0);
+    expect(normalized[0].y).toBeCloseTo(0);
+    expect(normalized[1].x).toBeCloseTo(1);
+    expect(normalized[1].y).toBeCloseTo(1);
   });
 });

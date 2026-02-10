@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { TapPoint, AnalysisResult } from '../types';
+import type { TapPoint, GridBounds, AnalysisResult } from '../types';
 import { normalizeTaps } from '../lib/normalize';
 import { getDigitProbabilities } from '../lib/heatmap';
 import { generateCandidates } from '../lib/candidates';
@@ -11,8 +11,9 @@ export function useAnalysis() {
   const [error, setError] = useState<string | null>(null);
 
   const analyze = useCallback(async (
-    taps: TapPoint[], 
-    heatmapWeight: number
+    taps: TapPoint[],
+    heatmapWeight: number,
+    gridBounds?: GridBounds | null
   ): Promise<AnalysisResult | null> => {
     setIsAnalyzing(true);
     setError(null);
@@ -21,8 +22,8 @@ export function useAnalysis() {
       // 1. Load Data
       const freqMap = await loadFrequencyData();
 
-      // 2. Normalize
-      const normalized = normalizeTaps(taps);
+      // 2. Normalize (grid-relative when bounds available, bounding-box fallback)
+      const normalized = normalizeTaps(taps, gridBounds ?? undefined);
 
       // 3. Heatmap
       const tapAnalyses = normalized.map((tap, index) => ({

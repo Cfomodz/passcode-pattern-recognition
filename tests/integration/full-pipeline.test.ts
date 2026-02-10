@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { TapPoint, TapAnalysis } from '../../src/types';
+import type { TapPoint, TapAnalysis, GridBounds } from '../../src/types';
 import { normalizeTaps } from '../../src/lib/normalize';
 import { getDigitProbabilities } from '../../src/lib/heatmap';
 import { generateCandidates, rankByHeatmap } from '../../src/lib/candidates';
@@ -34,10 +34,11 @@ function buildMockFrequencyMap(): Map<string, number> {
 function runPipeline(
   taps: TapPoint[],
   frequencyMap: Map<string, number>,
-  heatmapWeight: number = 0.5
+  heatmapWeight: number = 0.5,
+  gridBounds?: GridBounds
 ) {
   // 1. Normalize
-  const normalized = normalizeTaps(taps);
+  const normalized = normalizeTaps(taps, gridBounds);
 
   // 2. Heatmap probabilities per position
   const tapAnalyses: TapAnalysis[] = normalized.map((tap, index) => ({
@@ -324,6 +325,68 @@ describe('Full Pipeline Integration', () => {
 
       expect(result.heatmapRanking).toHaveLength(10);
       expect(result.compositeRanking).toHaveLength(10);
+    });
+  });
+
+  describe('grid-relative normalization (issue #12)', () => {
+    // Simulate a 375x500 grid (typical mobile viewport)
+    const grid: GridBounds = { width: 375, height: 500 };
+
+    it('should produce different top candidates for 1235 vs 4568 patterns', () => {
+      // Tap at proportional positions matching the keypad key centers
+      // 1235: taps at keys 1, 2, 3, 5
+      const taps1235: TapPoint[] = [
+        { x: grid.width * (1/6), y: grid.height * (1/8) },  // key 1
+        { x: grid.width * (3/6), y: grid.height * (1/8) },  // key 2
+        { x: grid.width * (5/6), y: grid.height * (1/8) },  // key 3
+        { x: grid.width * (3/6), y: grid.height * (3/8) },  // key 5
+      ];
+
+      // 4568: taps at keys 4, 5, 6, 8
+      const taps4568: TapPoint[] = [
+        { x: grid.width * (1/6), y: grid.height * (3/8) },  // key 4
+        { x: grid.width * (3/6), y: grid.height * (3/8) },  // key 5
+        { x: grid.width * (5/6), y: grid.height * (3/8) },  // key 6
+        { x: grid.width * (3/6), y: grid.height * (5/8) },  // key 8
+      ];
+
+      const result1235 = runPipeline(taps1235, frequencyMap, 1.0, grid);
+      const result4568 = runPipeline(taps4568, frequencyMap, 1.0, grid);
+
+      // Top heatmap candidates should be different
+      expect(result1235.heatmapRanking[0].pin).not.toBe(result4568.heatmapRanking[0].pin);
+
+      // 1235 should rank "1235" as top or near-top candidate
+      expect(result1235.heatmapRanking[0].pin).toBe('1235');
+
+      // 4568 should rank "4568" as top or near-top candidate
+      expect(result4568.heatmapRanking[0].pin).toBe('4568');
+    });
+
+    it('should produce correct top candidate for corner taps with grid bounds', () => {
+      // Tap at keypad corners: keys 1, 3, 7, 9
+      const cornerTaps: TapPoint[] = [
+        { x: grid.width * (1/6), y: grid.height * (1/8) },  // key 1
+        { x: grid.width * (5/6), y: grid.height * (1/8) },  // key 3
+        { x: grid.width * (1/6), y: grid.height * (5/8) },  // key 7
+        { x: grid.width * (5/6), y: grid.height * (5/8) },  // key 9
+      ];
+
+      const result = runPipeline(cornerTaps, frequencyMap, 1.0, grid);
+      expect(result.heatmapRanking[0].pin).toBe('1379');
+    });
+
+    it('should produce correct top candidate for center column with grid bounds', () => {
+      // Tap at center column: keys 2, 5, 8, 0
+      const centerTaps: TapPoint[] = [
+        { x: grid.width * (3/6), y: grid.height * (1/8) },  // key 2
+        { x: grid.width * (3/6), y: grid.height * (3/8) },  // key 5
+        { x: grid.width * (3/6), y: grid.height * (5/8) },  // key 8
+        { x: grid.width * (3/6), y: grid.height * (7/8) },  // key 0
+      ];
+
+      const result = runPipeline(centerTaps, frequencyMap, 1.0, grid);
+      expect(result.heatmapRanking[0].pin).toBe('2580');
     });
   });
 });

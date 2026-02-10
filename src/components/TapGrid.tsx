@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import type { TapPoint } from '../types';
+import type { TapPoint, GridBounds } from '../types';
 
 interface TapGridProps {
-  onTap: (point: TapPoint) => void;
+  onTap: (point: TapPoint, gridBounds: GridBounds) => void;
   isActive: boolean;
   children?: React.ReactNode;
 }
@@ -12,15 +12,15 @@ export const TapGrid: React.FC<TapGridProps> = ({ onTap, isActive, children }) =
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!isActive || !containerRef.current) return;
-    
+
     // Prevent default to stop scrolling/zooming on mobile
     e.preventDefault();
-    
+
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
-    onTap({ x, y });
+
+    onTap({ x, y }, { width: rect.width, height: rect.height });
   };
 
   useEffect(() => {
