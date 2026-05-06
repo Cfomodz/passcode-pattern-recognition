@@ -12,6 +12,7 @@ function App() {
   const { taps, gridBounds, addTap, reset: resetTaps, isComplete } = useTapCapture();
   const { analyze, isAnalyzing, error } = useAnalysis();
   const resultsRef = useRef<HTMLElement>(null);
+  const hasScrolledRef = useRef(false);
 
   const [results, setResults] = useState<AnalysisResult | null>(null);
   const [heatmapWeight, setHeatmapWeight] = useState(0.5);
@@ -31,9 +32,10 @@ function App() {
     }
   }, [isComplete, results, heatmapWeight, runAnalysis]);
 
-  // Scroll to results when they appear
+  // Scroll to results only on the initial null -> non-null transition
   useEffect(() => {
-    if (results && resultsRef.current) {
+    if (results && !hasScrolledRef.current && resultsRef.current) {
+      hasScrolledRef.current = true;
       resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [results]);
@@ -59,6 +61,7 @@ function App() {
 
     resetTaps();
     setResults(null);
+    hasScrolledRef.current = false;
   };
 
   return (
