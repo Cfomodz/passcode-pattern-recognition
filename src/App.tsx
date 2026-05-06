@@ -137,7 +137,7 @@ function App() {
 
         {/* State: Results */}
         {results && (
-          <section ref={resultsRef} className="space-y-6 animate-slide-up">
+          <section ref={resultsRef} className="space-y-6 animate-slide-up scroll-mt-24">
             <WeightSlider
               heatmapWeight={heatmapWeight}
               onChange={setHeatmapWeight}
